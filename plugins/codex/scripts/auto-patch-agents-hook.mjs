@@ -11,7 +11,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const AGENTS_DIR = path.join(process.env.HOME, ".claude", "agents");
@@ -79,7 +79,7 @@ async function main() {
 
     try {
       const patchScript = path.join(SCRIPT_DIR, "patch-agents.mjs");
-      execSync(`node "${patchScript}" patch "${agentName}" "${codexModel}"`, { timeout: 5000 });
+      execFileSync(process.execPath, [patchScript, "patch", agentName, codexModel], { timeout: 5000 });
       patched++;
     } catch { /* skip on error */ }
   }

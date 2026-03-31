@@ -98,12 +98,21 @@ function parseFrontmatter(content) {
   const body = match[2];
   const fields = {};
 
+  let currentKey = null;
   for (const line of raw.split(/\r?\n/)) {
+    if (/^[ \t]/.test(line)) {
+      // Indented continuation — append to current key (YAML list item)
+      if (currentKey) {
+        const item = line.trim().replace(/^-\s*/, "");
+        fields[currentKey] = fields[currentKey] ? `${fields[currentKey]}, ${item}` : item;
+      }
+      continue;
+    }
     const idx = line.indexOf(":");
     if (idx === -1) continue;
-    const key = line.slice(0, idx).trim();
+    currentKey = line.slice(0, idx).trim();
     const value = line.slice(idx + 1).trim();
-    fields[key] = value;
+    fields[currentKey] = value;
   }
 
   return { fields, body, raw };
