@@ -111,7 +111,7 @@ function parseFrontmatter(content) {
     const idx = line.indexOf(":");
     if (idx === -1) continue;
     currentKey = line.slice(0, idx).trim();
-    const value = line.slice(idx + 1).trim();
+    const value = line.slice(idx + 1).trim().replace(/^["']|["']$/g, "");
     fields[currentKey] = value;
   }
 

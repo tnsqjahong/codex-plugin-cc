@@ -46,7 +46,10 @@ function parseFrontmatter(content) {
 }
 
 function isOpenAIModel(model) {
-  return model && !CLAUDE_MODELS.has(model.toLowerCase());
+  if (!model) return false;
+  // Strip YAML quotes before checking
+  const clean = model.replace(/^["']|["']$/g, "").toLowerCase();
+  return !CLAUDE_MODELS.has(clean);
 }
 
 async function main() {
