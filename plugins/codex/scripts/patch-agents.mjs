@@ -201,8 +201,10 @@ function patchAgent(nameOrPath, targetModel) {
   if (CLAUDE_MODELS.includes(targetModel)) {
     // Switching to Claude model — remove codex fields
     let newRaw = setField(raw, "model", targetModel);
-    newRaw = removeField(newRaw, "_codex_model");
-    newRaw = removeField(newRaw, "tools");
+    if (wasCodex) {
+      newRaw = removeField(newRaw, "_codex_model");
+      newRaw = removeField(newRaw, "tools");
+    }
     if (fields.description) {
       newRaw = setField(newRaw, "description", fields.description.replace(/\s*\(Codex:.*?\)/, ""));
     }
