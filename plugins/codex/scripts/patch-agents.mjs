@@ -110,8 +110,8 @@ function parseFrontmatter(content) {
 }
 
 function setField(raw, key, value) {
-  // Replace or append a top-level field in raw frontmatter text
-  const re = new RegExp(`^${key}:.*$`, "m");
+  // Replace top-level field + any indented continuation lines (YAML lists)
+  const re = new RegExp(`^${key}:.*(?:\n(?=[ \t]).*)*`, "m");
   if (re.test(raw)) {
     return raw.replace(re, `${key}: ${value}`);
   }
@@ -119,7 +119,8 @@ function setField(raw, key, value) {
 }
 
 function removeField(raw, key) {
-  return raw.replace(new RegExp(`^${key}:.*\r?\n`, "m"), "").replace(/\n{2,}/g, "\n");
+  // Remove field + any indented continuation lines + trailing newline (optional for last line)
+  return raw.replace(new RegExp(`^${key}:.*(?:\n(?=[ \t]).*)*\r?\n?`, "m"), "").replace(/\n{2,}/g, "\n");
 }
 
 function rebuildFile(raw, body) {
