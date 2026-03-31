@@ -228,7 +228,11 @@ function patchAgent(nameOrPath, targetModel) {
   }
 
   const disallowed = (fields.disallowedTools || "").toLowerCase();
-  const readOnly = disallowed.includes("write") || disallowed.includes("edit");
+  const tools = (fields.tools || "").toLowerCase();
+  // Read-only if Write/Edit explicitly disallowed, or if tools are listed but don't include Write/Edit
+  const hasToolsList = tools.length > 0;
+  const toolsAllowWrite = !hasToolsList || tools.includes("write") || tools.includes("edit");
+  const readOnly = disallowed.includes("write") || disallowed.includes("edit") || !toolsAllowWrite;
   const writeFlag = readOnly ? "" : " --write";
 
   let newRaw = setField(raw, "model", "haiku");

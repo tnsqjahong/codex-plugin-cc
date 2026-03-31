@@ -14,7 +14,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import tty from "node:tty";
-import { execSync, spawn } from "node:child_process";
+import { execSync, execFileSync, spawn } from "node:child_process";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -365,7 +365,7 @@ class TUI {
       const patchScript = path.join(SCRIPT_DIR, "patch-agents.mjs");
       for (const [filePath, { name, model }] of entries) {
         try {
-          execSync(`node "${patchScript}" patch "${filePath}" "${model}"`, { encoding: "utf-8", timeout: 5000 });
+          execFileSync(process.execPath, [patchScript, "patch", filePath, model], { encoding: "utf-8", timeout: 5000 });
           const prov = CODEX_MODELS.includes(model) ? "OpenAI" : "Anthropic";
           console.log(`  ${name} → ${model} (${prov}) ✓`);
         } catch (e) {
